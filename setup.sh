@@ -137,5 +137,4 @@ echo "Setup complete. Run ./start.sh to launch the app."
 echo "code-server is available at http://your-server/code"
 echo "code-server password: $CODE_SERVER_PASSWORD"
 echo "export AWS_REGION=\$(bash ~/ecomm-workshop/get_aws_region.sh)" >> ~/.bashrc
-echo "export AWS_BEARER_TOKEN=\$(python3 ~/ecomm-workshop/bedrock.py)" >> ~/.bashrc
 ./setup_opencode.sh

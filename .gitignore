@@ -1,0 +1,31 @@
+# Environment and secrets
+.env*
+*.key
+*.pem
+*.p12
+*.p8
+credentials*
+secrets*
+.aws/
+
+# Claude
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# Docker
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
