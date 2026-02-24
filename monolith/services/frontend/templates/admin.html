@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Admin - Ecomm Shop{% endblock %}
+{% block content %}
+<h1 class="mb-4">Admin - Add Product</h1>
+<div class="row">
+    <div class="col-md-6">
+        <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Product Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <h3>Existing Products</h3>
+        <ul class="list-group">
+            {% for product in products %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ product.name }}
+                <span class="badge bg-primary">${{ "%.2f"|format(product.price) }}</span>
+            </li>
+            {% else %}
+            <li class="list-group-item text-muted">No products yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Products - Ecomm Shop{% endblock %}
+{% block content %}
+<h1 class="mb-4">Products</h1>
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if product.image_url %}
+            <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                <span class="text-white">No Image</span>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text text-truncate">{{ product.description }}</p>
+                <p class="card-text"><strong>${{ "%.2f"|format(product.price) }}</strong></p>
+                <a href="/products/{{ product.id }}" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <p class="text-muted">No products yet. <a href="/admin">Add some products</a>.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
