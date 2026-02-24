@@ -5,7 +5,9 @@ Environment variables:
     CATALOG_DATABASE_URL    - catalog microservice DB (required unless secret is used)
     INVENTORY_DATABASE_URL  - inventory microservice DB (required unless secret is used)
     CATALOG_DB_SECRET       - AWS Secrets Manager secret name for catalog DB credentials
+    CATALOG_DB_NAME         - Database name for catalog (used with CATALOG_DB_SECRET)
     INVENTORY_DB_SECRET     - AWS Secrets Manager secret name for inventory DB credentials
+    INVENTORY_DB_NAME       - Database name for inventory (used with INVENTORY_DB_SECRET)
     TARGET_S3_BUCKET        - S3 bucket name for image upload (if not set, images are copied locally)
 
 Usage:
@@ -41,14 +43,18 @@ def get_db_url_from_secret(secret_name, dbname):
     )
 
 
-def resolve_db_url(env_var, secret_env_var, label):
+def resolve_db_url(env_var, secret_env_var, dbname_env_var, label):
     """Return a database URL from the env var, or fall back to Secrets Manager."""
     url = os.environ.get(env_var)
     if url:
         return url
     secret_name = os.environ.get(secret_env_var)
     if secret_name:
-        dbname = input(f"Database name for {label}: ").strip()
+        # First try to get dbname from environment variable
+        dbname = os.environ.get(dbname_env_var)
+        if not dbname:
+            # Fall back to interactive prompt
+            dbname = input(f"Database name for {label}: ").strip()
         if not dbname:
             print(f"No database name provided for {label}, aborting.")
             sys.exit(1)
@@ -60,8 +66,8 @@ def resolve_db_url(env_var, secret_env_var, label):
 MONOLITH_URL = os.environ.get(
     "MONOLITH_DATABASE_URL", "postgresql://ecomm:ecomm@localhost:5432/ecomm"
 )
-CATALOG_URL = resolve_db_url("CATALOG_DATABASE_URL", "CATALOG_DB_SECRET", "catalog")
-INVENTORY_URL = resolve_db_url("INVENTORY_DATABASE_URL", "INVENTORY_DB_SECRET", "inventory")
+CATALOG_URL = resolve_db_url("CATALOG_DATABASE_URL", "CATALOG_DB_SECRET", "CATALOG_DB_NAME", "catalog")
+INVENTORY_URL = resolve_db_url("INVENTORY_DATABASE_URL", "INVENTORY_DB_SECRET", "INVENTORY_DB_NAME", "inventory")
 
 if not CATALOG_URL or not INVENTORY_URL:
     print("Error: catalog and inventory database URLs must be provided.")
@@ -70,7 +76,9 @@ if not CATALOG_URL or not INVENTORY_URL:
     print("  export INVENTORY_DATABASE_URL=postgresql://user:pass@host:5432/ecomm_inventory")
     print("or:")
     print("  export CATALOG_DB_SECRET=my/catalog/db/secret")
+    print("  export CATALOG_DB_NAME=dbcatalog01")
     print("  export INVENTORY_DB_SECRET=my/inventory/db/secret")
+    print("  export INVENTORY_DB_NAME=dbinventory01")
     sys.exit(1)
 
 UPLOADS_SRC = os.path.join(os.path.dirname(__file__), "monolith", "static", "uploads")
