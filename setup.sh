@@ -58,7 +58,6 @@ bind-addr: 127.0.0.1:8080
 auth: password
 password: ${CODE_SERVER_PASSWORD}
 cert: false
-base-path: /code
 CODESERVER_CONFIG
 
 # Display code-server password on login (use target user's home, not root's)
@@ -123,7 +122,7 @@ server {
     }
 
     location /code/ {
-        proxy_pass http://127.0.0.1:8080;
+        proxy_pass http://127.0.0.1:8080/;
         proxy_set_header Host $host;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection upgrade;
