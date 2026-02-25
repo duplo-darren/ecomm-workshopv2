@@ -11,31 +11,20 @@ sudo apt-get update
 sudo apt-get install -y python3 python3-pip python3-venv postgresql postgresql-contrib libpq-dev nginx \
   ca-certificates curl unzip socat
 
-# Set up SSL certificate with acme.sh
-echo "Setting up SSL certificate..."
-
-# Get public IP address
-PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || curl -s https://api.ipify.org)
-echo "Public IP: $PUBLIC_IP"
-
-# Create webroot directory and set ownership
-sudo mkdir -p /var/www/html
-sudo chown -R "$(whoami):$(whoami)" /var/www/html
-
-# Install acme.sh
-if [ ! -d "$HOME/.acme.sh" ]; then
-  curl https://get.acme.sh | sh
-  source "$HOME/.acme.sh/acme.sh.env"
-fi
-
-# Request certificate using the public IP
-"$HOME/.acme.sh/acme.sh" --issue --server letsencrypt --cert-profile shortlived --days 3 -d "$PUBLIC_IP" --webroot /var/www/html/
 
 # Install AWSCLI
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
+
+
+# Install terraform
+
+wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install terraform
+
 
 # Install Docker
 if ! command -v docker &> /dev/null; then
@@ -182,5 +171,4 @@ echo "Setup complete. Run ./start.sh to launch the app."
 echo "code-server is available at http://your-server/code"
 echo "code-server password: $CODE_SERVER_PASSWORD"
 echo "export AWS_REGION=\$(bash ~/ecomm-workshop/get_aws_region.sh)" >> ~/.bashrc
-echo "export AWS_BEARER_TOKEN=\$(python3 ~/ecomm-workshop/bedrock.py)" >> ~/.bashrc
 ./setup_opencode.sh
