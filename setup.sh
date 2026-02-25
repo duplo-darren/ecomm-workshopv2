@@ -9,7 +9,7 @@ export HOME="${HOME:-$(getent passwd "$(whoami)" | cut -d: -f6)}"
 # Install system dependencies
 sudo apt-get update
 sudo apt-get install -y python3 python3-pip python3-venv postgresql postgresql-contrib libpq-dev nginx \
-  ca-certificates curl unzip socat
+  ca-certificates curl unzip
 
 
 # Install AWSCLI
@@ -107,54 +107,29 @@ python3 -m venv "$APP_DIR/venv"
 source "$APP_DIR/venv/bin/activate"
 pip install -r "$APP_DIR/monolith/requirements.txt"
 
-# Configure nginx as reverse proxy with SSL
-# Get the certificate path using the public IP
-CERT_DIR="$HOME/.acme.sh/${PUBLIC_IP}_ecc"
-
-sudo tee /etc/nginx/sites-available/ecomm > /dev/null <<NGINX
+# Configure nginx as reverse proxy
+sudo tee /etc/nginx/sites-available/ecomm > /dev/null <<'NGINX'
 server {
     listen 80;
     server_name _;
 
-    # Webroot for acme.sh certificate validation
-    location /.well-known/acme-challenge/ {
-        root /var/www/html;
-    }
-
-    # Redirect HTTP to HTTPS
-    location / {
-        return 301 https://\$host\$request_uri;
-    }
-}
-
-server {
-    listen 443 ssl;
-    server_name _;
-
-    ssl_certificate ${CERT_DIR}/fullchain.cer;
-    ssl_certificate_key ${CERT_DIR}/${PUBLIC_IP}.key;
-
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
-
     location / {
         proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     location /code/ {
         proxy_pass http://127.0.0.1:8080/;
-        proxy_set_header Host \$host;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection upgrade;
         proxy_set_header Accept-Encoding gzip;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 NGINX
