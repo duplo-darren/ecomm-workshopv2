@@ -52,7 +52,7 @@ def build_and_push(service, registry, repo_prefix, tag):
 
 
 def main():
-    repo_prefix = input("Please enter your tenant_name: ").strip()
+    repo_prefix = input("Please enter your prefix: ").strip()
     if not repo_prefix:
         print("No prefix provided, aborting.")
         sys.exit(1)
