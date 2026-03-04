@@ -45,15 +45,24 @@ cat > "$CONFIG_FILE" << 'EOF'
   "provider": {
     "amazon-bedrock": {
       "options": {
-        "region": "${AWS_REGION}",
+        "region": "us-east-1",
         "profile": "default"
       }
     }
   },
   "model": "amazon-bedrock/us.anthropic.claude-sonnet-4-5-20250929-v1:0",
   "small_model": "amazon-bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0",
-  "theme": "opencode",
-  "autoupdate": true
+  "autoupdate": true,
+  "mcp": {
+  "duplo-helpdesk": {
+      "enabled": true,
+      "type": "remote",
+      "url": "",
+      "headers": {
+        "Authorization": "Bearer TOKEN"
+      }
+    }
+  }
 }
 EOF
 
