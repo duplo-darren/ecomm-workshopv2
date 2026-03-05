@@ -62,7 +62,10 @@ cat > "$CONFIG_FILE" << 'EOF'
         "Authorization": "Bearer TOKEN"
       }
     }
-  }
+  },
+  "tools": {
+	"duplo-helpdesk_LegacyAuth_get_api_account_external_login_callback": false
+ }
 }
 EOF
 

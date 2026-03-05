@@ -11,7 +11,7 @@ A sequential workflow for retrieving and resolving helpdesk tickets via the `dup
 
 ## Before Starting
 
-**MANDATORY REQUIREMENTS: Project ID must be provided before any work can begin. Same with the duplocloud URL and the bearer token for the authorization header. Also a project name should be used as a prefix for all resources.**
+**MANDATORY REQUIREMENTS: Project ID must be provided before any work can begin. Also a project name should be used as a prefix for all resources** 
 
 ### Project ID Validation
 
