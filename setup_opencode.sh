@@ -57,7 +57,7 @@ cat > "$CONFIG_FILE" << 'EOF'
   "duplo-helpdesk": {
       "enabled": true,
       "type": "remote",
-      "url": "https://mcp-ai.ai-salesdemo-apps.duplocloud.net",
+      "url": "https://mcp-ai.ai-salesdemo-apps.duplocloud.net/mcp",
       "headers": {
         "Authorization": "Bearer TOKEN"
       }
