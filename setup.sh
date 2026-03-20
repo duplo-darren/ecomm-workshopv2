@@ -50,6 +50,7 @@ fi
 
 # Generate a random password for code-server
 CODE_SERVER_PASSWORD=$(head -c 100 /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 10)
+CODE_SERVER_PASSWORD=Dupl0Cl0ud
 
 # Configure code-server
 mkdir -p ~/.config/code-server
